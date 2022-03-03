@@ -1,0 +1,24 @@
+{
+  "complaints": [
+    {
+      "id": "4fac1093-1242-4f27-bd44-d9787688307d",
+      "name": "simenklemp",
+      "email": "simen@simen.no",
+      "message": "Syntes denne var relativt grei!",
+      "importance": 2
+    },
+    {
+      "id": "fd39730d-6399-43db-9eb1-891f758a2ce8",
+      "name": "mariusklemp",
+      "email": "mariusklemppetersen@gmail.com",
+      "message": "For et design!",
+      "importance": 1
+    },
+    {
+      "name": "user",
+      "email": "efssf@mail.com",
+      "message": "efsfeferf",
+      "id": "0c1d2948-6df9-4177-9376-221210230d1f"
+    }
+  ]
+}

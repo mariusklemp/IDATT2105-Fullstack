@@ -1,0 +1,65 @@
+package mariuskp.fullstack.calculatorREST.controller;
+
+import mariuskp.fullstack.calculatorREST.model.CalculatorRequest;
+import mariuskp.fullstack.calculatorREST.model.CalculatorResponse;
+
+import mariuskp.fullstack.calculatorREST.model.Equation;
+import mariuskp.fullstack.calculatorREST.repository.EquationRepository;
+import mariuskp.fullstack.calculatorREST.service.CalculatorService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+@RestController
+@RequestMapping(value = "/calculate")
+@EnableAutoConfiguration
+@CrossOrigin
+public class CalculatorController {
+    @Autowired
+    EquationRepository equationRepository;
+
+    private static final Logger LOGGER = LogManager.getLogger(CalculatorController.class);
+
+    @Autowired
+    private CalculatorService service;
+
+    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public CalculatorResponse doCalculation(final @RequestBody CalculatorRequest calculatorRequest) {
+        LOGGER.info("Calculating..." + calculatorRequest.getOperand1() + " " + calculatorRequest.getOperatorSign() + " " + calculatorRequest.getOperand2());
+
+        double answer = service.calculate(calculatorRequest.getOperand1(), calculatorRequest.getOperatorSign(), calculatorRequest.getOperand2());
+
+        equationRepository.save(new Equation(1,calculatorRequest.getOperand1() + calculatorRequest.getOperatorSign() + calculatorRequest.getOperand2() + "=" + answer));
+
+        return new CalculatorResponse(Double.toString(answer));
+    }
+
+    @GetMapping("/equations")
+    public ResponseEntity<List<Equation>> getAllEquations() {
+        try {
+            List<Equation> equations = new ArrayList<>();
+
+            equationRepository.findAll().forEach(equations::add);
+
+            if (equations.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+
+            return new ResponseEntity<>(equations, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+}

@@ -21,7 +21,6 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping(value = "/calculate")
 @EnableAutoConfiguration
 @CrossOrigin
 public class CalculatorController {
@@ -33,33 +32,25 @@ public class CalculatorController {
     @Autowired
     private CalculatorService service;
 
-    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/calculate")
     @ResponseStatus(value = HttpStatus.CREATED)
     public CalculatorResponse doCalculation(final @RequestBody CalculatorRequest calculatorRequest) {
         LOGGER.info("Calculating..." + calculatorRequest.getOperand1() + " " + calculatorRequest.getOperatorSign() + " " + calculatorRequest.getOperand2());
 
         double answer = service.calculate(calculatorRequest.getOperand1(), calculatorRequest.getOperatorSign(), calculatorRequest.getOperand2());
 
-        equationRepository.save(new Equation(1,calculatorRequest.getOperand1() + calculatorRequest.getOperatorSign() + calculatorRequest.getOperand2() + "=" + answer));
+        equationRepository.save(new Equation(calculatorRequest.getUserID(),calculatorRequest.getOperand1() + calculatorRequest.getOperatorSign() + calculatorRequest.getOperand2() + "=" + answer));
 
         return new CalculatorResponse(Double.toString(answer));
     }
 
-    @GetMapping("/equations")
-    public ResponseEntity<List<Equation>> getAllEquations() {
-        try {
+    @GetMapping("/equations/{id}")
+    public List<Equation> getAllEquationsById(@PathVariable("id") int id) {
+
             List<Equation> equations = new ArrayList<>();
 
-            equationRepository.findAll().forEach(equations::add);
+            equationRepository.findAllfromID(id).forEach(equations::add);
 
-            if (equations.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-
-            return new ResponseEntity<>(equations, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            return equations;
     }
-
 }

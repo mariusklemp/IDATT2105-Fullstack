@@ -9,6 +9,8 @@ public interface EquationRepository {
 
     List<Equation> findAll();
 
+    List<Equation> findAllfromID(int id);
+
     /*
     int update(Tutorial book);
 

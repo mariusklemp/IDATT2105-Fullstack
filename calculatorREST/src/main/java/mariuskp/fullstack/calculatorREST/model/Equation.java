@@ -19,4 +19,12 @@ public class Equation {
     public String getEquation() {
         return equation;
     }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
+    public void setEquation(String equation) {
+        this.equation = equation;
+    }
 }

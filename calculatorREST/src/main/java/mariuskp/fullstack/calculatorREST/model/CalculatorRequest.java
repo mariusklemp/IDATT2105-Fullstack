@@ -12,12 +12,14 @@ public class CalculatorRequest {
     private final String operand1;
     private final String operatorSign;
     private final String operand2;
+    private final int userID;
 
     @JsonCreator
-    public CalculatorRequest(@JsonProperty("operand1") final String operand1, @JsonProperty("operand2") final String operand2, @JsonProperty("operatorSign") final String operatorSign, double answer) {
+    public CalculatorRequest(@JsonProperty("operand1") final String operand1, @JsonProperty("operand2") final String operand2, @JsonProperty("operatorSign") final String operatorSign,@JsonProperty("userID") int userID) {
         this.operand1 = operand1;
         this.operatorSign = operatorSign;
         this.operand2 = operand2;
+        this.userID = userID;
     }
 
     @JsonProperty("operand1")
@@ -33,6 +35,10 @@ public class CalculatorRequest {
     @JsonProperty("operator")
     public String getOperatorSign() {
         return operatorSign;
+    }
+    @JsonProperty("userID")
+    public int getUserID(){
+        return userID;
     }
 }
 

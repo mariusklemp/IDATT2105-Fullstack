@@ -2,6 +2,7 @@ package mariuskp.fullstack.calculatorREST.repository;
 
 import java.util.List;
 
+import mariuskp.fullstack.calculatorREST.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import mariuskp.fullstack.calculatorREST.model.Equation;
@@ -23,5 +24,11 @@ public class JdbcEquationRepository implements EquationRepository {
     @Override
     public List<Equation> findAll() {
         return jdbcTemplate.query("SELECT * from equations", BeanPropertyRowMapper.newInstance(Equation.class));
+    }
+    @Override
+    public List<Equation> findAllfromID(int id) {
+        return jdbcTemplate.query("SELECT * from equations where userID=? ",
+                BeanPropertyRowMapper.newInstance(Equation.class), id);
+
     }
 }

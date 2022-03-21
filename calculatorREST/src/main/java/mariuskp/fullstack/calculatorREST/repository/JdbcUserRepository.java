@@ -19,8 +19,8 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public int save(User user) {
-        return jdbcTemplate.update("INSERT INTO users (userID, username, passw) VALUES(?,?,?)",
-                new Object[] { user.getUserID(), user.getUsername(), user.getPassw() });
+        return jdbcTemplate.update("INSERT INTO users (username, passw) VALUES(?,?)",
+                new Object[] {user.getUsername(), user.getPassw()});
     }
     @Override
     public List<User> findAll() {
@@ -42,21 +42,17 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public LoginResponse findByLoginRequest(LoginRequest loginRequest) {
         try {
-            System.out.println("Kom meg inn");
+            System.out.println("LogingRequest: " + loginRequest.getUsername() + ", " + loginRequest.getPassword());
 
             User user = jdbcTemplate.queryForObject("SELECT * FROM users WHERE username=? AND passw=?",
                     BeanPropertyRowMapper.newInstance(User.class),loginRequest.getUsername(),loginRequest.getPassword());
 
-            System.out.println("LogingRequest:" + loginRequest.getUsername() + ", " + loginRequest.getPassword());
             System.out.println("Fant bruker med " + user.getUsername() + ", " + user.getPassw());
-
-            if(loginRequest.getUsername().equalsIgnoreCase(user.getUsername()) && loginRequest.getPassword().equalsIgnoreCase(user.getPassw())) {
-                return new LoginResponse("Success", user.getUserID());
-            }
-            return new LoginResponse("Fail", 0);
+            return new LoginResponse("Success", user.getUserID());
 
         } catch (IncorrectResultSizeDataAccessException e) {
-            return null;
+            System.out.println("Fant ikke bruker");
+            return new LoginResponse("Fail", 0);
         }
     }
 }

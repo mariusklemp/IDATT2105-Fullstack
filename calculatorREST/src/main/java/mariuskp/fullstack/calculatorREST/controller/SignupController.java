@@ -30,15 +30,9 @@ public class SignupController {
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<String> createUser(@RequestBody User user) {
+    public boolean createUser(@RequestBody User user) {
         LOGGER.info("Signing up..." + user.getUsername());
-        try {
-            LOGGER.info("Kom meg inn");
-            userRepository.save(new User(user.getUserID(), user.getUsername(), user.getPassw()));
-            LOGGER.info("kom meg videre");
-            return new ResponseEntity<>("User was created successfully.", HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            userRepository.save(new User(user.getUsername(), user.getPassw()));
+            return true;
     }
 }

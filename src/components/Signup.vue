@@ -37,6 +37,8 @@
   </div>
 </template>
 <script>
+import axios from "axios";
+
 export default {
   props: {
     msg: String,
@@ -53,10 +55,30 @@ export default {
   },
   methods: {
     registerUser() {
-      alert("You have now pressed a button");
-    },
-  },
+      const user = {
+        username: this.user.email,
+        passw: this.user.password
+      }
+      const response = axios.post(
+          "http://localhost:8085/demo/signup",
+          user
+      );
+      response.then((resolvedResult) => {
+        console.log(resolvedResult.data);
+        if(resolvedResult.data=== true){
+          alert("You succesfully signedUp!");
+          this.$router.push({
+            name: "Login",
+          });
+        }else{
+          alert("Something wrong happend")
+        }
+      });
+    }
+  }
 };
+
+
 </script>
 
 <style></style>

@@ -22,7 +22,7 @@ export default {
   login(userInfo) {
     const loginRequest = {
       username: userInfo.username,
-      password: userInfo.password,
+      passw: userInfo.password,
     };
     const loginResponse = axios.post(
       "http://localhost:8085/demo/login",
@@ -30,6 +30,7 @@ export default {
     );
     loginResponse.then((resolvedResult) => {
       userInfo.loginStatus = resolvedResult.data.loginStatus;
+      userInfo.userID = resolvedResult.data.userID;
     });
     return loginResponse;
   },

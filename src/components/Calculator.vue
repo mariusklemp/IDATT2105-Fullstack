@@ -33,6 +33,7 @@
       <div class="containerHeader">
         <h2 id="h3">This is a log of recent equations</h2>
         <button id="clearButton" @click="clearLog">Clear</button>
+        <button id="showLog" @click="showLog">Show recent log</button>
       </div>
       <Log id="log" :logArray="logArray"></Log>
     </div>
@@ -52,10 +53,14 @@ export default {
       operatorClicked: false,
       previous: "",
       logArray: [],
+      userID: null,
     };
   },
   components: {
     Log,
+  },
+  mounted() {
+    this.userID = this.$store.getters.getUserID
   },
   props: {
     msg: String,
@@ -110,6 +115,7 @@ export default {
         operand1: this.previous,
         operatorSign: this.operatorSign,
         operand2: this.screen,
+        userID: this.userID
       };
       let storeScreen = this.screen;
       const calculatorResponse = axios.post(
@@ -125,6 +131,17 @@ export default {
     clearLog() {
       this.logArray.splice(0, this.logArray.length);
     },
+    showLog(){
+      const logResponse = axios.get((
+          "http://localhost:8085/demo/equations/" + this.userID
+      ));
+      logResponse.then((resolvedResult) => {
+        const list = resolvedResult.data.map(x => x.equation)
+        for(let i= 0; i < list.length; i++){
+          this.logArray.push(list[i])
+        }
+      })
+    }
   },
 };
 </script>

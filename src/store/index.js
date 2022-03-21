@@ -30,11 +30,17 @@ export default createStore({
           if (userInfo.loginStatus === "Success") {
             commit("ADD_USER", userInfo);
           }
+          console.log("Nå er jeg i state")
+          console.log(this.state.userInfo.userID)
+          console.log(this.state.userInfo.loginStatus)
         })
         .catch((error) => {
           console.log(error);
         });
     },
+  },
+  getters: {
+    getUserID: state => state.userInfo.userID,
   },
   modules: {},
 });

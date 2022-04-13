@@ -33,7 +33,7 @@
       <div class="containerHeader">
         <h2 id="h3">This is a log of recent equations</h2>
         <button id="clearButton" @click="clearLog">Clear</button>
-        <button id="showLog" @click="showLog">Show recent log</button>
+        <button id="showLog" @click="showLog">Show</button>
       </div>
       <Log id="log" :logArray="logArray"></Log>
     </div>
@@ -42,7 +42,7 @@
 
 <script>
 import Log from "@/components/Log";
-import axios from "axios";
+import EventService from "@/services/EventService";
 
 export default {
   data() {
@@ -118,10 +118,8 @@ export default {
         userID: this.userID
       };
       let storeScreen = this.screen;
-      const calculatorResponse = axios.post(
-          "http://localhost:8085/demo/calculate",
-          calculatorRequest
-      );
+
+      const calculatorResponse = EventService.doEquation(calculatorRequest, this.$store.state.userInfo.jwtoken)
       calculatorResponse.then((resolvedResult) => {
         this.screen = resolvedResult.data.screen;
         this.logArray.push(this.previous + this.operatorSign + storeScreen +  " = " + this.screen);
@@ -132,11 +130,10 @@ export default {
       this.logArray.splice(0, this.logArray.length);
     },
     showLog(){
-      const logResponse = axios.get((
-          "http://localhost:8085/demo/equations/" + this.userID
-      ));
+      const logResponse = EventService.findRecentLog(this.userID, this.$store.state.userInfo.jwtoken);
+      console.log(logResponse)
       logResponse.then((resolvedResult) => {
-        const list = resolvedResult.data.map(x => x.equation)
+        const list = resolvedResult.data.map(x => x.equation).slice(0,10)
         for(let i= 0; i < list.length; i++){
           this.logArray.push(list[i])
         }
@@ -236,6 +233,20 @@ button:hover {
   background-color: #4e9ed4;
 }
 #clearButton {
+  height: 30px;
+  width: 50px;
+  border: 1px solid black;
+  background-color: #252525;
+  color: #fff;
+  vertical-align: middle;
+  margin: 0 auto;
+  font-size: smaller;
+  text-align: center;
+  font-weight: revert;
+  border-radius: 10px;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+}
+#showLog{
   height: 30px;
   width: 50px;
   border: 1px solid black;

@@ -3,7 +3,7 @@
     <form @submit="handleClickSignin()">
       <fieldset>
         <legend data-testid="loginText" type="text">Login</legend>
-        <h5 id="LoginError" v-if="userInfo.loginStatus === 'Fail'">
+        <h5 id="LoginError" v-if="this.$store.state.userInfo.loginStatus === 'Fail'">
           Wrong password or username! Please register!
         </h5>
         <p data-testid="usernameLabel">Please write your username</p>
@@ -19,7 +19,7 @@
           userInfo.loginStatus
         }}</label>
       </div>
-      <div v-if="userInfo.loginStatus === 'Fail'" class="registerContainer">
+      <div v-if="this.$store.state.userInfo.loginStatus === 'Fail'" class="registerContainer">
         <router-link id="mylink" to="/signup"
           >If you do not have a user, click here to register</router-link
         >
@@ -28,6 +28,8 @@
   </div>
 </template>
 <script>
+import {doLoginWithToken} from "@/services/EventService";
+
 export default {
   data() {
     return {
@@ -41,14 +43,16 @@ export default {
   },
   methods: {
     async handleClickSignin() {
-      this.$store.dispatch("storeUser", this.userInfo).then(async () => {
-        if (this.userInfo.loginStatus === "Success") {
-          await this.$router.push({
-            name: "Calculator",
-          });
-          alert("Welcome");
-        }
-      });
+      let loginResponse = await doLoginWithToken(this.userInfo);
+
+      if (loginResponse.loginStatus === "Success") {
+        this.$store.dispatch("storeUser", loginResponse);
+        await this.$router.push({
+          name: "Calculator",
+        });
+      }else{
+        this.$store.dispatch("storeUser", loginResponse);
+      }
     },
   },
 };

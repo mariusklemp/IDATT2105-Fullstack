@@ -1,5 +1,6 @@
 import axios from "axios";
 
+
 const apiClient = axios.create({
   baseURL: "http://localhost:3000",
   withCredentials: false,
@@ -9,6 +10,22 @@ const apiClient = axios.create({
   },
 });
 
+export async function doLoginWithToken(userInfo) {
+
+  const loginRequest = {
+    username: userInfo.username,
+    passw: userInfo.password,
+  };
+
+  return axios.post(
+      `http://localhost:8085/demo/token`,
+      loginRequest,
+  ).then(response => {
+    return response.data;
+  }).catch( err => {
+    console.log(err);
+  });
+}
 export default {
   getComplaints() {
     return apiClient.get("/complaints");
@@ -19,19 +36,27 @@ export default {
   postComplaint(complaint) {
     return apiClient.post("/complaints", complaint);
   },
-  login(userInfo) {
-    const loginRequest = {
-      username: userInfo.username,
-      passw: userInfo.password,
-    };
-    const loginResponse = axios.post(
-      "http://localhost:8085/demo/login",
-      loginRequest
-    );
-    loginResponse.then((resolvedResult) => {
-      userInfo.loginStatus = resolvedResult.data.loginStatus;
-      userInfo.userID = resolvedResult.data.userID;
-    });
-    return loginResponse;
+  async doEquation(calculatorRequest, token){
+
+    const calculatorResponse = axios.post(
+      "http://localhost:8085/demo/calculate",
+        calculatorRequest, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        });
+    return calculatorResponse;
   },
+  async findRecentLog(userID, token){
+
+    const logResponse = axios.get(
+        "http://localhost:8085/demo/equations/" + userID, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        });
+
+    return logResponse;
+  },
+
 };

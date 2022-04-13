@@ -8,12 +8,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LoginResponse {
 
-    final private String loginStatus;
-    final private int userID;
+    private String loginStatus;
+    private int userID;
+    private String JWToken;
 
     public LoginResponse(@JsonProperty("loginStatus")  String loginStatus, int userID) {
         this.loginStatus = loginStatus;
         this.userID = userID;
+        this.JWToken = JWToken;
     }
 
     @JsonProperty("loginStatus")
@@ -23,5 +25,21 @@ public class LoginResponse {
 
     public int getUserID() {
         return userID;
+    }
+
+    public String getJWToken() {
+        return JWToken;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
+    public void setLoginStatus(String loginStatus) {
+        this.loginStatus = loginStatus;
+    }
+
+    public void setJWToken(String JWToken) {
+        this.JWToken = JWToken;
     }
 }
